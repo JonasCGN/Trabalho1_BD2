@@ -74,55 +74,59 @@ server.get('/see-balance', (req, res) => {
 });
 
 server.post('/send', async (req, res) => {
-  console.log(dados)
+  // console.log(dados)
+  if(req.body.userSend === dados.nomeUsuario){
+    return res.status(500).send("Username invalido!")
+  }else{
 
-  await db.select()
-  .from('Cliente')
-  .where({
-    userName: req.body.userSend
-  })
-  .limit(1)
-  .one()
-  .then((result) => {
-    if(result){
-      novoBalance = result.balance + parseFloat(req.body.valueSend);
-      console.log("Valor 1:", novoBalance);
-
-      db.update('Cliente')
-      .set({balance: novoBalance})
+      await db.select()
+      .from('Cliente')
       .where({
         userName: req.body.userSend
       })
-      .one();
-    }
-  }).catch((error) => {
-    return res.status(404).send('Error:' + error);
-  });
-
-  novoBalance = dados.saldo - parseFloat(req.body.valueSend);
-
-  await db.update('Cliente')
-  .set({ 
-    balance: novoBalance 
-  })
-  .where({
-    userName: dados.nomeUsuario
-  })
-  .one()
-  .then(()=>{
-    dados.saldo = novoBalance;
-  })
-  .catch((error) => {
-    console.log(error)
-    return res.status(500).send("Erro ao atualizar o balance \n Error:" + error)
-  });
-  
-  return res.render('index.htm');
+      .limit(1)
+      .one()
+      .then((result) => {
+        if(result){
+          novoBalance = result.balance + parseFloat(req.body.valueSend);
+          console.log("Valor 1:", novoBalance);
+    
+          db.update('Cliente')
+          .set({balance: novoBalance})
+          .where({
+            userName: req.body.userSend
+          })
+          .one();
+        }
+      }).catch((error) => {
+        return res.status(404).send('Error:' + error);
+      });
+    
+      novoBalance = dados.saldo - parseFloat(req.body.valueSend);
+    
+      await db.update('Cliente')
+      .set({ 
+        balance: novoBalance 
+      })
+      .where({
+        userName: dados.nomeUsuario
+      })
+      .one()
+      .then(()=>{
+        dados.saldo = novoBalance;
+      })
+      .catch((error) => {
+        console.log(error)
+        return res.status(500).send("Erro ao atualizar o balance \n Error:" + error)
+      });
+      
+      return res.render('index.htm');
+  }
 
 });
 
 server.post('/loginaccount', (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
 
   db.select()
     .from('Cliente')
@@ -146,7 +150,7 @@ server.post('/loginaccount', (req, res) => {
     });
 });
 
-server.get('/saveaccount', (req, res) => {
+server.post('/saveaccount', (req, res) => {
   console.log(req.body);
 
   // Verifica se já existe um usuário com o mesmo nome
@@ -177,7 +181,7 @@ server.get('/saveaccount', (req, res) => {
           return res.render('index.htm');
         })
         .catch((e) => {
-          console.log(e);
+          console.log(e.name);
           return res.status(500).send('Erro ao criar a conta');
         });
     })

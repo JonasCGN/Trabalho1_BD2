@@ -1,0 +1,25 @@
+services:
+
+  db-server:
+    restart: always
+    image: kauahensilva/orientdb:2.2.37
+    ports:
+    - "2424:2424"
+    - "2480:2480"
+
+    environment:
+      ORIENTDB_ROOT_PASSWORD: root
+      ORIENTDB_SERVER_MODE: distributed
+      ORIENTDB_SERVER_DISTRIBUTED_MODE: 'true'
+      ORIENTDB_SERVER_DISTRIBUTED_MASTER: 'true'
+      ORIENTDB_SERVER_DISTRIBUTED_URL: 192.168.1.24:2424
+    
+    deploy:
+      replicas: 1
+
+    networks:
+    - wifi_network
+
+networks:
+  wifi_network:
+    external: true

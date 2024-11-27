@@ -2,10 +2,10 @@ services:
 
   db:
     restart: always
-    image: kauahensilva/orientdb:2.2.37
+    image: orientdb:3.2.35
     ports:
-      - "2424:2424"
-      - "2480:2480"
+      - "2424:2425"
+      - "2480:2481"
     network_mode: "host"
     volumes:
       - /orentdb/config:/opt/orientdb/config
